@@ -42863,7 +42863,7 @@
 /turf/open/floor/plasteel,
 /area/ai_monitored/storage/eva)
 "bQb" = (
-/obj/machinery/shieldwallgen,
+/obj/machinery/power/shieldwallgen,
 /obj/structure/window/reinforced{
 	dir = 1;
 	pixel_y = 2
@@ -42902,7 +42902,7 @@
 /turf/open/floor/plasteel,
 /area/teleporter)
 "bQe" = (
-/obj/machinery/shieldwallgen,
+/obj/machinery/power/shieldwallgen,
 /obj/structure/window/reinforced{
 	dir = 1;
 	pixel_y = 2
@@ -43328,7 +43328,7 @@
 /turf/open/floor/plasteel,
 /area/ai_monitored/storage/eva)
 "bRs" = (
-/obj/machinery/shieldwallgen,
+/obj/machinery/power/shieldwallgen,
 /obj/effect/turf_decal/tile/neutral{
 	dir = 1
 	},
@@ -51604,7 +51604,7 @@
 /obj/effect/turf_decal/stripes/line{
 	dir = 1
 	},
-/obj/machinery/rnd/production/protolathe/department/science,
+/obj/machinery/rnd/production/protolathe,
 /turf/open/floor/plasteel,
 /area/science/lab)
 "ciE" = (
@@ -61521,10 +61521,6 @@
 /turf/open/floor/engine/vacuum,
 /area/science/mixing/chamber)
 "cEt" = (
-/obj/machinery/sparker/toxmix{
-	dir = 2;
-	pixel_x = 25
-	},
 /obj/machinery/atmospherics/components/unary/vent_scrubber/on{
 	dir = 4
 	},
@@ -62396,10 +62392,6 @@
 	},
 /area/science/research)
 "cGj" = (
-/obj/machinery/sparker/toxmix{
-	dir = 2;
-	pixel_x = 25
-	},
 /obj/machinery/atmospherics/components/unary/outlet_injector/atmos/toxins_mixing_input{
 	dir = 4
 	},
@@ -68918,7 +68910,7 @@
 /turf/open/floor/plating,
 /area/maintenance/department/science/xenobiology)
 "cTD" = (
-/obj/machinery/shieldwallgen/xenobiologyaccess,
+/obj/machinery/power/shieldwallgen/xenobiologyaccess,
 /obj/structure/cable,
 /turf/open/floor/plating,
 /area/science/xenobiology)
@@ -73816,6 +73808,10 @@
 	},
 /turf/open/floor/plating,
 /area/science/nanite)
+"fwf" = (
+/obj/machinery/igniter/incinerator_toxmix,
+/turf/open/floor/engine/vacuum,
+/area/science/mixing/chamber)
 "fDD" = (
 /obj/machinery/light_switch{
 	pixel_y = -25
@@ -107810,7 +107806,7 @@ cBt
 cCu
 fPO
 cEs
-cFn
+tXK
 cFn
 cHe
 cIc
@@ -108067,7 +108063,7 @@ cBu
 cCv
 fPO
 cEt
-tXK
+fwf
 cGj
 cHe
 cId

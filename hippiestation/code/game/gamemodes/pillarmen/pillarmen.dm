@@ -7,7 +7,7 @@
 	recommended_enemies = 3
 	restricted_jobs = list("AI", "Cyborg")
 	protected_jobs = list("Security Officer", "Warden", "Detective", "Head of Security", "Captain")
-	restricted_races = list(/datum/species/lizard, /datum/species/ipc, /datum/species/bird, /datum/species/tarajan)
+	restricted_races = list(/datum/species/lizard, /datum/species/ipc, /datum/species/bird, /datum/species/human/felinid/tarajan)
 	var/list/datum/team/pillarmen/pillarManTeams = list()
 	var/list/datum/mind/pre_pillars = list()
 

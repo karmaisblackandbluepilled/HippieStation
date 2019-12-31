@@ -3,6 +3,7 @@
 	var/chem_radioactivity = 0
 	var/chem_bluespaced = FALSE
 	var/chem_centrifuged = FALSE
+	var/next_react = 0
 
 /proc/get_random_toxin_reagent_id()	// Returns a random toxin reagent ID minus blacklisted reagents
 	var/static/list/random_reagents = list()
@@ -43,6 +44,9 @@
 							if(!is_type_in_typecache(cached_my_atom, GLOB.no_reagent_message_typecache) && SSticker.HasRoundStarted())
 								for(var/mob/M in viewers(3, T))
 									to_chat(M, ("<span class='notice'>[icon2html(cached_my_atom, viewers(cached_my_atom))] The solid chemicals melt into a liquid!</span>"))
+									//for(var/i = 1; i <= cached_reagents.len; i++)
+									//	message_admins("[cached_reagents[i]] melted into liquid of atom [my_atom] located in [my_atom.loc]")
+									///For debug purposes, feel free to uncomment in future. (YoYoBatty)
 
 					if(LIQUID)
 						if(!is_type_in_typecache(R, GLOB.statechange_reagent_blacklist)) //Reagent states are interchangeable, so one blacklist to rule them all.
@@ -188,8 +192,14 @@
 			if("TURF")
 				if(R.reagent_state != SOLID)
 					R.reaction_turf(A, R.volume * volume_modifier, show_message)
-				R.handle_state_change(A, R.volume * special_modifier, cached_my_atom)
+				if(world.time >= next_react)
+					R.handle_state_change(A, R.volume * special_modifier, cached_my_atom)
+					if(method == VAPOR)
+						next_react = world.time + 1
 			if("OBJ")
 				if(R.reagent_state != SOLID)
 					R.reaction_obj(A, R.volume * volume_modifier, show_message)
-				R.handle_state_change(get_turf(A), R.volume * special_modifier, cached_my_atom)
+				if(world.time >= next_react)
+					R.handle_state_change(get_turf(A), R.volume * special_modifier, cached_my_atom)
+					if(method == VAPOR)
+						next_react = world.time + 1

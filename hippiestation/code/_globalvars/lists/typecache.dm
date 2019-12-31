@@ -10,7 +10,11 @@ GLOBAL_LIST_INIT(no_reagent_message_typecache, typecacheof(list(
 	/obj/effect/decal/cleanable,
 	/mob,
 	/obj/item/reagent_containers/food,
-	/turf/open/pool)
+	/turf/open/pool,
+	/obj/item/toy,
+	/obj/item/grown,
+	/obj/machinery/duct,
+	/obj/machinery/plumbing)
 ))
 
 // Don't do state change in these atoms
@@ -36,12 +40,14 @@ GLOBAL_LIST_INIT(statechange_reagent_blacklist, typecacheof(list(
 	/datum/reagent/nitrous_oxide,
 	/datum/reagent/carbondioxide,
 	/datum/reagent/cryostylane,
-	/datum/reagent/consumable/ethanol/neurotoxin)
+	/datum/reagent/consumable/ethanol/neurotoxin,
+	/datum/reagent/mutationtoxin)
 ))
 
 GLOBAL_LIST_INIT(vaporchange_reagent_blacklist, typecacheof(list(
 	/datum/reagent/lube,
-	/datum/reagent/clf3)
+	/datum/reagent/clf3,
+	/datum/reagent/mutationtoxin)
 ))
 
 GLOBAL_LIST_INIT(solidchange_reagent_blacklist, typecacheof(list())) //for future use

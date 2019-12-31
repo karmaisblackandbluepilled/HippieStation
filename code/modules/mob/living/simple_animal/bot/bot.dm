@@ -438,7 +438,6 @@ Pass the desired type path itself, declaring a temporary var beforehand is not r
 		return scan_result
 	else
 		return FALSE //The current element failed assessment, move on to the next.
-	return
 
 /mob/living/simple_animal/bot/proc/check_bot(targ)
 	var/turf/T = get_turf(targ)
@@ -672,11 +671,11 @@ Pass a positive integer as an argument to override a bot's default speed.
 	destination = nearest_beacon
 
 //PDA control. Some bots, especially MULEs, may have more parameters.
-/mob/living/simple_animal/bot/proc/bot_control(command, mob/user, turf/user_turf, list/user_access = list())
+/mob/living/simple_animal/bot/proc/bot_control(command, mob/user, list/user_access = list())
 	if(!on || emagged == 2 || remote_disabled) //Emagged bots do not respect anyone's authority! Bots with their remote controls off cannot get commands.
 		return TRUE //ACCESS DENIED
 	if(client)
-		bot_control_message(command,user,user_turf,user_access)
+		bot_control_message(command, user)
 	// process control input
 	switch(command)
 		if("patroloff")
@@ -688,7 +687,7 @@ Pass a positive integer as an argument to override a bot's default speed.
 
 		if("summon")
 			bot_reset()
-			summon_target = user_turf
+			summon_target = get_turf(user)
 			if(user_access.len != 0)
 				access_card.access = user_access + prev_access //Adds the user's access, if any.
 			mode = BOT_SUMMON
@@ -700,15 +699,14 @@ Pass a positive integer as an argument to override a bot's default speed.
 	return
 
 //
-/mob/living/simple_animal/bot/proc/bot_control_message(command,user,user_turf,user_access)
+/mob/living/simple_animal/bot/proc/bot_control_message(command, user)
 	switch(command)
 		if("patroloff")
 			to_chat(src, "<span class='warning big'>STOP PATROL</span>")
 		if("patrolon")
 			to_chat(src, "<span class='warning big'>START PATROL</span>")
 		if("summon")
-			var/area/a = get_area(user_turf)
-			to_chat(src, "<span class='warning big'>PRIORITY ALERT:[user] in [a.name]!</span>")
+			to_chat(src, "<span class='warning big'>PRIORITY ALERT:[user] in [get_area_name(user)]!</span>")
 		if("stop")
 			to_chat(src, "<span class='warning big'>STOP!</span>")
 
@@ -817,6 +815,8 @@ Pass a positive integer as an argument to override a bot's default speed.
 				hacked = TRUE
 				locked = TRUE
 				to_chat(usr, "<span class='warning'>[text_hack]</span>")
+				message_admins("Safety lock of [ADMIN_LOOKUPFLW(src)] was disabled by [ADMIN_LOOKUPFLW(usr)] in [ADMIN_VERBOSEJMP(src)]")
+				log_game("Safety lock of [src] was disabled by [key_name(usr)] in [AREACOORD(src)]")
 				bot_reset()
 			else if(!hacked)
 				to_chat(usr, "<span class='boldannounce'>[text_dehack_fail]</span>")
@@ -824,6 +824,7 @@ Pass a positive integer as an argument to override a bot's default speed.
 				emagged = FALSE
 				hacked = FALSE
 				to_chat(usr, "<span class='notice'>[text_dehack]</span>")
+				log_game("Safety lock of [src] was re-enabled by [key_name(usr)] in [AREACOORD(src)]")
 				bot_reset()
 		if("ejectpai")
 			if(paicard && (!locked || issilicon(usr) || IsAdminGhost(usr)))

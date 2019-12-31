@@ -42,9 +42,11 @@ Runes can either be invoked by one's self or with many different cultists. Each 
 	. = ..()
 	if(set_keyword)
 		keyword = set_keyword
+/* hippie start -- silicons can now see cult stuff
 	var/image/I = image(icon = 'icons/effects/blood.dmi', icon_state = null, loc = src)
 	I.override = TRUE
 	add_alt_appearance(/datum/atom_hud/alternate_appearance/basic/silicons, "cult_runes", I)
+hippie end*/
 
 /obj/effect/rune/examine(mob/user)
 	. = ..()
@@ -853,7 +855,7 @@ structure_check() searches for nearby cultist structures required for the invoca
 			fail_invoke()
 			log_game("Manifest rune failed - too many summoned ghosts")
 			return list()
-		notify_ghosts("Manifest rune invoked in [get_area(src)].", 'sound/effects/ghost2.ogg', source = src)
+		notify_ghosts("Manifest rune invoked in [get_area(src)].", 'sound/effects/ghost2.ogg', source = src, header = "Manifest rune")
 		var/list/ghosts_on_rune = list()
 		for(var/mob/dead/observer/O in T)
 			if(O.client && !is_banned_from(O.ckey, ROLE_CULTIST) && !QDELETED(src) && !QDELETED(O))

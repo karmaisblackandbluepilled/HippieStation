@@ -5,6 +5,8 @@
 	desc = "A canister for the storage of gas."
 	icon_state = "yellow"
 	density = TRUE
+	ui_x = 420
+	ui_y = 405
 
 	var/valve_open = FALSE
 	var/obj/machinery/atmospherics/components/binary/passive_gate/pump
@@ -186,8 +188,8 @@
 
 
 
-/obj/machinery/portable_atmospherics/canister/New(loc, datum/gas_mixture/existing_mixture)
-	..()
+/obj/machinery/portable_atmospherics/canister/Initialize(mapload, datum/gas_mixture/existing_mixture)
+	. = ..()
 	if(existing_mixture)
 		air_contents.copy_from(existing_mixture)
 	else
@@ -237,7 +239,7 @@
 		update |= CANISTER_UPDATE_HOLDING
 	if(connected_port)
 		update |= CANISTER_UPDATE_CONNECTED
-	var/pressure = air_contents.return_pressure()
+	var/pressure = air_contents.return_pressure() ? air_contents.return_pressure() : 0
 	if(pressure < 10)
 		update |= CANISTER_UPDATE_EMPTY
 	else if(pressure < 5 * ONE_ATMOSPHERE)
@@ -289,6 +291,7 @@
 	qdel(src)
 
 /obj/machinery/portable_atmospherics/canister/welder_act(mob/living/user, obj/item/I)
+	..()
 	if(user.a_intent == INTENT_HARM)
 		return FALSE
 
@@ -361,7 +364,7 @@
 															datum/tgui/master_ui = null, datum/ui_state/state = GLOB.physical_state)
 	ui = SStgui.try_update_ui(user, src, ui_key, ui, force_open)
 	if(!ui)
-		ui = new(user, src, ui_key, "canister", name, 420, 405, master_ui, state)
+		ui = new(user, src, ui_key, "canister", name, ui_x, ui_y, master_ui, state)
 		ui.open()
 
 /obj/machinery/portable_atmospherics/canister/ui_data()
@@ -401,6 +404,7 @@
 				var/newtype = label2types[label]
 				if(newtype)
 					var/obj/machinery/portable_atmospherics/canister/replacement = newtype
+					investigate_log("was relabelled to [initial(replacement.name)] by [key_name(usr)].", INVESTIGATE_ATMOS)
 					name = initial(replacement.name)
 					desc = initial(replacement.desc)
 					icon_state = initial(replacement.icon_state)

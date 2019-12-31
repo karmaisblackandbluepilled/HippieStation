@@ -63,6 +63,7 @@
 	return 0
 
 /obj/item/robot_suit/wrench_act(mob/living/user, obj/item/I) //Deconstucts empty borg shell. Flashes remain unbroken because they haven't been used yet
+	. = ..()
 	var/turf/T = get_turf(src)
 	if(l_leg || r_leg || chest || l_arm || r_arm || head)
 		if(I.use_tool(src, user, 5, volume=50))
@@ -322,6 +323,8 @@
 			SSblackbox.record_feedback("amount", "cyborg_birth", 1)
 			forceMove(O)
 			O.robot_suit = src
+			
+			log_game("[key_name(user)] has put the MMI/posibrain of [key_name(M.brainmob)] into a cyborg shell at [AREACOORD(src)]")
 
 			if(!locomotion)
 				O.lockcharge = TRUE

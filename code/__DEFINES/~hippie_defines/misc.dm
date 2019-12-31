@@ -13,3 +13,11 @@
 #define LAG_STONE "lag stone"
 #define GHOST_STONE "ghost stone"
 #define SYNDIE_STONE "syndie stone"
+
+#define GANGMAGEDDON	(1 << 0)
+#define GANGS			(1 << 1)
+#define VIGILANTE		(1 << 2)
+
+#define DOM_BLOCKED_SPAM_CAP 6
+#define DOM_REQUIRED_TURFS 30
+#define DOM_HULK_HITS_REQUIRED 10

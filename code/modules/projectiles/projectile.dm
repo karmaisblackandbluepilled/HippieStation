@@ -208,7 +208,7 @@
 	else
 		L.log_message("has been shot by [firer] with [src]", LOG_ATTACK, color="orange")
 
-	return L.apply_effects(stun, knockdown, unconscious, irradiate, slur, stutter, eyeblur, drowsy, blocked, stamina, jitter, paralyze, immobilize)
+	return BULLET_ACT_HIT
 
 /obj/item/projectile/proc/vol_by_damage()
 	if(src.damage)
@@ -532,7 +532,13 @@
 	if(QDELETED(target))
 		return FALSE
 	if(!ignore_source_check && firer)
-		var/mob/M = firer
+		var/mob/M = firer 
+		// hippie start
+		if(isliving(M))
+			var/mob/living/L = M
+			if((target in L.hasparasites()) && target.loc == L.loc)
+				return FALSE
+		// hippie end
 		if((target == firer) || ((target == firer.loc) && ismecha(firer.loc)) || (target in firer.buckled_mobs) || (istype(M) && (M.buckled == target)))
 			return FALSE
 	if(!ignore_loc && (loc != target.loc))

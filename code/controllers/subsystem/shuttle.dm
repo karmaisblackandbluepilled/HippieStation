@@ -9,6 +9,7 @@ SUBSYSTEM_DEF(shuttle)
 
 	var/list/mobile = list()
 	var/list/stationary = list()
+	var/list/beacons = list()
 	var/list/transit = list()
 
 	var/list/transit_requesters = list()
@@ -25,6 +26,9 @@ SUBSYSTEM_DEF(shuttle)
 	var/emergencyCallAmount = 0		//how many times the escape shuttle was called
 	var/emergencyNoEscape
 	var/emergencyNoRecall = FALSE
+	var/adminEmergencyNoRecall = FALSE //so admins can block the recall MODULE: SHUTTLE TOGGLE
+	var/lastMode = SHUTTLE_IDLE //MODULE: SHUTTLE TOGGLE
+	var/lastCallTime = 6000 //MODULE: SHUTTLE TOGGLE
 	var/list/hostileEnvironments = list() //Things blocking escape shuttle from leaving
 	var/list/tradeBlockade = list() //Things blocking cargo from leaving.
 	var/supplyBlocked = FALSE
@@ -125,7 +129,7 @@ SUBSYSTEM_DEF(shuttle)
 				break
 
 /datum/controller/subsystem/shuttle/proc/CheckAutoEvac()
-	if(emergencyNoEscape || emergencyNoRecall || !emergency || !SSticker.HasRoundStarted())
+	if(emergencyNoEscape || adminEmergencyNoRecall || emergencyNoRecall || !emergency || !SSticker.HasRoundStarted())
 		return
 
 	var/threshold = CONFIG_GET(number/emergency_shuttle_autocall_threshold)
@@ -152,10 +156,17 @@ SUBSYSTEM_DEF(shuttle)
 			emergency.request(null, set_coefficient = 0.4)
 
 /datum/controller/subsystem/shuttle/proc/block_recall(lockout_timer)
+	if(adminEmergencyNoRecall)
+		priority_announce("Error!", "Emergency Shuttle Uplink Alert", 'sound/misc/announce_dig.ogg')
+		addtimer(CALLBACK(src, .proc/unblock_recall), lockout_timer)
+		return
 	emergencyNoRecall = TRUE
 	addtimer(CALLBACK(src, .proc/unblock_recall), lockout_timer)
 
 /datum/controller/subsystem/shuttle/proc/unblock_recall()
+	if(adminEmergencyNoRecall) //MODULE: SHUTTLE TOGGLE
+		priority_announce("Error!", "Emergency Shuttle Uplink Alert", 'sound/misc/announce_dig.ogg')
+		return
 	emergencyNoRecall = FALSE
 
 /datum/controller/subsystem/shuttle/proc/getShuttle(id)
@@ -206,6 +217,9 @@ SUBSYSTEM_DEF(shuttle)
 			to_chat(user, "The emergency shuttle is moving away to a safe distance.")
 			return
 		if(SHUTTLE_STRANDED)
+			to_chat(user, "The emergency shuttle has been disabled by CentCom.")
+			return
+		if(SHUTTLE_DISABLED)//MODULE: SHUTTLE TOGGLE
 			to_chat(user, "The emergency shuttle has been disabled by CentCom.")
 			return
 
@@ -277,7 +291,7 @@ SUBSYSTEM_DEF(shuttle)
 		return 1
 
 /datum/controller/subsystem/shuttle/proc/canRecall()
-	if(!emergency || emergency.mode != SHUTTLE_CALL || emergencyNoRecall || SSticker.mode.name == "meteor")
+	if(!emergency || emergency.mode != SHUTTLE_CALL || adminEmergencyNoRecall || emergencyNoRecall || SSticker.mode.name == "meteor")//MODULE: SHUTTLE TOGGLE
 		return
 	var/security_num = seclevel2num(get_security_level())
 	switch(security_num)
@@ -366,6 +380,7 @@ SUBSYSTEM_DEF(shuttle)
 		priority_announce("Hostile environment detected. \
 			Departure has been postponed indefinitely pending \
 			conflict resolution.", null, 'sound/misc/notice1.ogg', "Priority")
+
 	if(!emergencyNoEscape && (emergency.mode == SHUTTLE_STRANDED))
 		emergency.mode = SHUTTLE_DOCKED
 		emergency.setTimer(emergencyDockTime)
@@ -749,27 +764,6 @@ SUBSYSTEM_DEF(shuttle)
 		ui = new(user, src, ui_key, "shuttle_manipulator", name, 800, 600, master_ui, state)
 		ui.open()
 
-/proc/shuttlemode2str(mode)
-	switch(mode)
-		if(SHUTTLE_IDLE)
-			. = "idle"
-		if(SHUTTLE_IGNITING)
-			. = "engines charging"
-		if(SHUTTLE_RECALL)
-			. = "recalled"
-		if(SHUTTLE_CALL)
-			. = "called"
-		if(SHUTTLE_DOCKED)
-			. = "docked"
-		if(SHUTTLE_STRANDED)
-			. = "stranded"
-		if(SHUTTLE_ESCAPE)
-			. = "escape"
-		if(SHUTTLE_ENDGAME)
-			. = "endgame"
-	if(!.)
-		CRASH("shuttlemode2str(): invalid mode [mode]")
-
 
 /datum/controller/subsystem/shuttle/ui_data(mob/user)
 	var/list/data = list()
@@ -825,7 +819,7 @@ SUBSYSTEM_DEF(shuttle)
 		else if(!M.destination)
 			L["can_fast_travel"] = FALSE
 		if (M.mode != SHUTTLE_IDLE)
-			L["mode"] = capitalize(shuttlemode2str(M.mode))
+			L["mode"] = capitalize(M.mode)
 		L["status"] = M.getDbgStatusText()
 		if(M == existing_shuttle)
 			data["existing_shuttle"] = L

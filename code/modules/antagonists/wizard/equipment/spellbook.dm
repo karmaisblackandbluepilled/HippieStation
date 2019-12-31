@@ -380,13 +380,14 @@
 	name = "Guardian Deck"
 	desc = "A deck of guardian tarot cards, capable of binding a personal guardian to your body. There are multiple types of guardian available, but all of them will transfer some amount of damage to you. \
 	It would be wise to avoid buying these with anything capable of causing you to swap bodies with others."
-	item_path = /obj/item/guardiancreator/choose/wizard
+	item_path = /obj/item/guardiancreator/wizard
 	category = "Assistance"
 
+/* hippie start -- holopara rework
 /datum/spellbook_entry/item/guardian/Buy(mob/living/carbon/human/user,obj/item/spellbook/book)
 	. = ..()
 	if(.)
-		new /obj/item/paper/guides/antag/guardian/wizard(get_turf(user))
+		new /obj/item/paper/guides/antag/guardian/wizard(get_turf(user))*/// hippie end
 
 /datum/spellbook_entry/item/bloodbottle
 	name = "Bottle of Blood"
@@ -488,6 +489,8 @@
 /datum/spellbook_entry/summon/guns/IsAvailible()
 	if(!SSticker.mode) // In case spellbook is placed on map
 		return FALSE
+	if(istype(SSticker.mode, /datum/game_mode/dynamic)) // Disable events on dynamic
+		return FALSE
 	return !CONFIG_GET(flag/no_summon_guns)
 
 /datum/spellbook_entry/summon/guns/Buy(mob/living/carbon/human/user,obj/item/spellbook/book)
@@ -504,6 +507,8 @@
 
 /datum/spellbook_entry/summon/magic/IsAvailible()
 	if(!SSticker.mode) // In case spellbook is placed on map
+		return FALSE
+	if(istype(SSticker.mode, /datum/game_mode/dynamic)) // Disable events on dynamic
 		return FALSE
 	return !CONFIG_GET(flag/no_summon_magic)
 
@@ -522,6 +527,8 @@
 
 /datum/spellbook_entry/summon/events/IsAvailible()
 	if(!SSticker.mode) // In case spellbook is placed on map
+		return FALSE
+	if(istype(SSticker.mode, /datum/game_mode/dynamic)) // Disable events on dynamic
 		return FALSE
 	return !CONFIG_GET(flag/no_summon_events)
 
@@ -644,7 +651,7 @@
 
 /obj/item/spellbook/proc/wrap(content)
 	var/dat = ""
-	dat +="<html><head><title>Spellbook</title></head>"
+	dat +="<html><head>[UTF8HEADER]<title>Spellbook</title></head>"
 	dat += {"
 	<head>
 		<style type="text/css">
@@ -730,7 +737,7 @@
 					if(E.limit)
 						E.limit--
 					uses -= E.cost
-					gauntlet_flag = TRUE // hippie -- badmin gauntlet
+					bought_things[E.type] = bought_things[E.type] ? bought_things[E.type] + 1 : 1 // hippie -- badmin gauntlet stuff
 		else if(href_list["refund"])
 			E = entries[text2num(href_list["refund"])]
 			if(E && E.refundable)
@@ -739,6 +746,7 @@
 					if(!isnull(E.limit))
 						E.limit += result
 					uses += result
+					bought_things[E.type] = bought_things[E.type] ? bought_things[E.type] - max(result / E.cost, E.cost) : 0 // hippie -- badmin gauntlet stuff
 		else if(href_list["page"])
 			tab = sanitize(href_list["page"])
 	attack_self(H)

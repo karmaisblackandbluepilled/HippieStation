@@ -14,6 +14,7 @@
 	cost = 5
 	surplus = 90
 
+
 /datum/uplink_item/stealthy_tools/thermal
 	name = "Thermal Imaging Goggles"
 	desc = "These goggles allow you to see organisms through walls by capturing the upper portion of the infrared light spectrum, \
@@ -45,6 +46,9 @@
 	item = /obj/item/storage/box/syndie_kit/imp_gmindslave
 	exclude_modes = list(/datum/game_mode/infiltration)
 	cost = 10
+
+/datum/uplink_item/implants/stealthimplant
+	cost = 5
 
 /* Botany */
 /datum/uplink_item/role_restricted/lawnmower
@@ -86,22 +90,32 @@
 	cost = 13
 	surplus = 45
 
-/*/datum/uplink_item/nukeoffer/blastco
-	name = "Unlock the BlastCo(tm) Armory"
-	desc = "Enough gear to fully equip a team with explosive based weaponry."
+/datum/uplink_item/bundles_TC/blastco
+	name = "BlastCo(tm) Armory"
+	desc = "Enough gear to fully equip a team!"
 	item = /obj/effect/gibspawner/generic // non-tangible item because techwebs use this path to determine illegal tech
 	cost = 200
 
-/datum/uplink_item/nukeoffer/blastco/spawn_item(turf/loc, datum/component/uplink/U, mob/user)
-	if(LAZYLEN(GLOB.blastco_doors))
-		for(var/V in GLOB.blastco_doors)
-			var/obj/machinery/door/poddoor/shutters/blastco/X = V
-			X.open()
-		loc.visible_message("<span class='notice'>The Armory has been unlocked successfully!</span>")
+/datum/uplink_item/bundles_TC/blastco/spawn_item(spawn_path, mob/user, datum/component/uplink/U)
+	var/datum/antagonist/nukeop/N = user?.mind?.has_antag_datum(/datum/antagonist/nukeop)
+	if(!N || !istype(N))
+		to_chat(user, "<span class='warning'>The purchase was unsuccessful, and spent telecrystals have been refunded.</span>")
+		U.telecrystals += cost
+		return
+	if(N.nuke_team)
+		if(N.nuke_team.bought_blastco)
+			to_chat(user, "<span class='warning'>You have already recieved a BlastCo(tm) supply!</span>")
+			U.telecrystals += cost
+			return
+		N.nuke_team.bought_blastco = TRUE
+		for(var/datum/mind/M in N.nuke_team.members)
+			if(iscarbon(M.current))
+				var/mob/living/carbon/C = M.current
+				var/obj/item/blastco_spawner/BCS = new(get_turf(C))
+				to_chat(C, "<span class='notice'>\The [BCS] appears [C.put_in_hands(BCS) ? "in your hands" : "on the floor"]!</span>")
 	else
-		loc.visible_message("<span class='warning'>The purchase was unsuccessful, and spent telecrystals have been refunded.</span>")
-		U.telecrystals += cost //So the admins don't have to refund you
-	return*/
+		var/obj/item/blastco_spawner/BCS = new(get_turf(user))
+		to_chat(user, "<span class='notice'>\The [BCS] appears [user.put_in_hands(BCS) ? "in your hands" : "on the floor"]!</span>")
 
 /datum/uplink_item/role_restricted/firesuit_syndie
 	name = "Syndicate Firesuit"
@@ -139,6 +153,13 @@
 
 /datum/uplink_item/ammo/revolver
 	cost = 3
+
+/datum/uplink_item/role_restricted/canegun
+	name = "Concealed cane shotgun"
+	desc = "A shotgun cleverly disgusied as a pimp stick. Pull on it to rack it and fold it to fire. Holds 8 shells at once. Keep away from assistants."
+	restricted_roles = list("Clown","Mime")
+	cost = 8
+	item = /obj/item/gun/ballistic/shotgun/canegun
 
 /datum/uplink_item/dangerous/butterfly
 	name = "Energy Butterfly Knife"
@@ -181,11 +202,6 @@
 	cost = 8
 	exclude_modes = list() // Has no reason to be excluded any more.
 
-/datum/uplink_item/stealthy_tools/chameleon
-	cost = 4
-	include_modes = list(/datum/game_mode/nuclear, /datum/game_mode/traitor, /datum/game_mode/infiltration)
-	player_minimum = 0
-
 /datum/uplink_item/stealthy_tools/syndigaloshes
 	name = "No-Slip Brown Shoes"
 	item = /obj/item/clothing/shoes/sneakers/brown/noslip
@@ -204,6 +220,7 @@
 
 /datum/uplink_item/device_tools/syndicate_bomb
 	cost = 10
+	exclude_modes = list(/datum/game_mode/infiltration) //no blowing shit up
 
 /datum/uplink_item/device_tools/syndicate_detonator
 	cost = 1 //Nuke ops already spawn with one
@@ -218,11 +235,7 @@
 	cost = 1
 	surplus = 60
 
-/datum/uplink_item/implants/microbomb
-	include_modes = list(/datum/game_mode/nuclear, /datum/game_mode/traitor)
-
 /datum/uplink_item/implants/macrobomb
-	include_modes = list(/datum/game_mode/nuclear, /datum/game_mode/traitor)
 	restricted = FALSE
 
 /datum/uplink_item/dangerous/hockey
@@ -289,6 +302,10 @@
 	cost = 6
 	surplus = 10
 
+/datum/uplink_item/support/reinforcement
+	desc = "Call in an additional team member. They'll start with a kit of their choice, but that's it."
+	cost = 30
+
 /datum/uplink_item/badass/surplus
 	player_minimum = 0
 
@@ -314,6 +331,10 @@
 	Put two together to create the carp suit, which allows you to deflect ranged attacks."
 	cost = 5
 	limited_stock = 2
+	exclude_modes = list(/datum/game_mode/nuclear, /datum/game_mode/nuclear/clown_ops, /datum/game_mode/infiltration)
+
+/datum/uplink_item/stealthy_weapons/cqc
+	item = /obj/item/cqc_manual // lmao @ granter code
 
 /datum/uplink_item/stealthy_weapons/throwingweapons
 	cost = 2
@@ -361,6 +382,7 @@
 	item = /obj/item/storage/box/syndie_kit/armstrong
 	cost = 14
 	surplus = 20 // someone who respects the eldritch god Nar-Sie a little (((too much))) complained
+	exclude_modes = list(/datum/game_mode/infiltration)
 
 /datum/uplink_item/device_tools/brainwash_disk
 	restricted_roles = list("Medical Doctor", "Chief Medical Officer")
@@ -372,7 +394,7 @@
 	item = /obj/item/storage/box/syndie_kit/nanosuit
 	cost = 20
 	surplus = 10
-	cant_discount = TRUE
+	cant_discount = TRUE	
 	exclude_modes = list(/datum/game_mode/nuclear, /datum/game_mode/infiltration)
 
 /datum/uplink_item/dangerous/synth
@@ -413,9 +435,6 @@
 /datum/uplink_item/dangerous/guardian
 	exclude_modes = list(/datum/game_mode/nuclear, /datum/game_mode/nuclear/clown_ops, /datum/game_mode/infiltration)
 
-/datum/uplink_item/stealthy_weapons/martialarts
-	exclude_modes = list(/datum/game_mode/nuclear, /datum/game_mode/nuclear/clown_ops, /datum/game_mode/infiltration)
-
 /datum/uplink_item/stealthy_weapons/romerol_kit
 	exclude_modes = list(/datum/game_mode/nuclear, /datum/game_mode/infiltration)
 
@@ -433,9 +452,6 @@
 
 /datum/uplink_item/device_tools/singularity_beacon
 	exclude_modes = list(/datum/game_mode/infiltration) //no.
-
-/datum/uplink_item/device_tools/syndicate_bomb
-	exclude_modes = list(/datum/game_mode/infiltration) //no blowing shit up
 
 /datum/uplink_item/cyber_implants/thermals
 	include_modes = list(/datum/game_mode/nuclear, /datum/game_mode/infiltration)
@@ -528,3 +544,10 @@
 	item = /obj/item/storage/belt/hfblade
 	cost = 9
 	surplus = 15
+	exclude_modes = list(/datum/game_mode/infiltration)
+
+/datum/uplink_item/device_tools/threat
+	name = "Threat scanning glasses"
+	desc = "Mark threats and check enemies for objective items, weapons and high level access. Guaranteed to greentext or your telecrystals back."
+	item = /obj/item/clothing/glasses/hud/threat
+	cost = 6

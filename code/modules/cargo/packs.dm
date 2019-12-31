@@ -1386,10 +1386,10 @@
 	desc = "These high powered Shield Wall Generators are guaranteed to keep any unwanted lifeforms on the outside, where they belong! Contains four shield wall generators. Requires Teleporter access to open."
 	cost = 2000
 	access = ACCESS_TELEPORTER
-	contains = list(/obj/machinery/shieldwallgen,
-					/obj/machinery/shieldwallgen,
-					/obj/machinery/shieldwallgen,
-					/obj/machinery/shieldwallgen)
+	contains = list(/obj/machinery/power/shieldwallgen,
+					/obj/machinery/power/shieldwallgen,
+					/obj/machinery/power/shieldwallgen,
+					/obj/machinery/power/shieldwallgen)
 	crate_name = "shield generators crate"
 	crate_type = /obj/structure/closet/crate/secure/science
 
@@ -1834,6 +1834,27 @@
 	contains = list(/obj/item/vending_refill/hydroseeds,
 					/obj/item/vending_refill/hydronutrients)
 	crate_name = "hydroponics supply crate"
+
+/datum/supply_pack/organic/grill
+	name = "Grilling Starter Kit"
+	desc = "Hey dad I'm Hungry. Hi Hungry I'm THE NEW GRILLING STARTER KIT ONLY 5000 BUX GET NOW! Contains a grill and fuel."
+	cost = 5000
+	crate_type = /obj/structure/closet/crate
+	contains = list(/obj/item/stack/sheet/mineral/coal/five,
+					/obj/machinery/grill/unwrenched,
+					/obj/item/reagent_containers/food/drinks/soda_cans/monkey_energy
+					)
+	crate_name = "grilling starter kit crate"
+
+/datum/supply_pack/organic/grillfuel
+	name = "Grilling Fuel Kit"
+	desc = "Contains propane and propane accessories. (Note: doesn't contain any actual propane.)"
+	cost = 2000
+	crate_type = /obj/structure/closet/crate
+	contains = list(/obj/item/stack/sheet/mineral/coal/ten,
+					/obj/item/reagent_containers/food/drinks/soda_cans/monkey_energy
+					)
+	crate_name = "grilling fuel kit crate"
 
 //////////////////////////////////////////////////////////////////////////////
 ////////////////////////////// Livestock /////////////////////////////////////

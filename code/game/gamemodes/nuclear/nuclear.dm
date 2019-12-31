@@ -115,10 +115,9 @@
 
 	uniform = /obj/item/clothing/under/syndicate
 	shoes = /obj/item/clothing/shoes/combat
-	gloves = /obj/item/clothing/gloves/combat
 	back = /obj/item/storage/backpack/fireproof
 	ears = /obj/item/radio/headset/syndicate/alt
-	l_pocket = /obj/item/pinpointer/nuke/syndicate
+	l_pocket = /obj/item/reagent_containers/food/snacks/donkpocket/warm // hippie -- had to replace the syndie-lad with something!
 	id = /obj/item/card/id/syndicate
 	belt = /obj/item/gun/ballistic/automatic/pistol
 	backpack_contents = list(/obj/item/storage/box/syndie=1,\
@@ -126,7 +125,7 @@
 
 	var/tc = 25
 	var/command_radio = FALSE
-	var/uplink_type = /obj/item/uplink/nuclear
+	var/uplink_type = /obj/item/clothing/gloves/syndielad/nuke // hippie -- changed from regular station bounced radio to a syndielad
 
 
 /datum/outfit/syndicate/leader
@@ -139,6 +138,7 @@
 /datum/outfit/syndicate/no_crystals
 	name = "Syndicate Operative - Reinforcement"
 	tc = 0
+	l_pocket = /obj/item/pinpointer/nuke/syndicate
 
 /datum/outfit/syndicate/post_equip(mob/living/carbon/human/H)
 	var/obj/item/radio/R = H.ears

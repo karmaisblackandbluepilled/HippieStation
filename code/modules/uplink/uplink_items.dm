@@ -138,11 +138,11 @@ GLOBAL_LIST_INIT(uplink_items, subtypesof(/datum/uplink_item))
 
 //Discounts (dynamically filled above)
 /datum/uplink_item/discounts
-	category = "Discounted Gear"
+	category = "Discounts"
 
 //All bundles and telecrystals
 /datum/uplink_item/bundles_TC
-	category = "Bundles and Telecrystals"
+	category = "Bundles"
 	surplus = 0
 	cant_discount = TRUE
 
@@ -327,7 +327,7 @@ GLOBAL_LIST_INIT(uplink_items, subtypesof(/datum/uplink_item))
 
 // Dangerous Items
 /datum/uplink_item/dangerous
-	category = "Conspicuous and Dangerous Weapons"
+	category = "Conspicuous Weapons"
 
 /datum/uplink_item/dangerous/rawketlawnchair
 	name = "84mm Rocket Propelled Grenade Launcher"
@@ -448,7 +448,7 @@ GLOBAL_LIST_INIT(uplink_items, subtypesof(/datum/uplink_item))
 	name = "Holoparasites"
 	desc = "Though capable of near sorcerous feats via use of hardlight holograms and nanomachines, they require an \
 			organic host as a home base and source of fuel. Holoparasites come in various types and share damage with their host."
-	item = /obj/item/storage/box/syndie_kit/guardian
+	item = /obj/item/guardiancreator/tech // hippie -- holoparasite rework
 	cost = 18
 	surplus = 0
 	exclude_modes = list(/datum/game_mode/nuclear, /datum/game_mode/nuclear/clown_ops)
@@ -540,7 +540,7 @@ GLOBAL_LIST_INIT(uplink_items, subtypesof(/datum/uplink_item))
 
 // Stealthy Weapons
 /datum/uplink_item/stealthy_weapons
-	category = "Stealthy and Inconspicuous Weapons"
+	category = "Stealthy Weapons"
 
 /datum/uplink_item/stealthy_weapons/combatglovesplus
 	name = "Combat Gloves Plus"
@@ -926,7 +926,7 @@ GLOBAL_LIST_INIT(uplink_items, subtypesof(/datum/uplink_item))
 
 //Grenades and Explosives
 /datum/uplink_item/explosives
-	category = "Grenades and Explosives"
+	category = "Explosives"
 
 /datum/uplink_item/explosives/bioterrorfoam
 	name = "Bioterror Foam Grenade"
@@ -1090,7 +1090,7 @@ GLOBAL_LIST_INIT(uplink_items, subtypesof(/datum/uplink_item))
 
 //Support and Mechs
 /datum/uplink_item/support
-	category = "Support and Mechanized Exosuits"
+	category = "Support and Exosuits"
 	surplus = 0
 	include_modes = list(/datum/game_mode/nuclear)
 
@@ -1164,7 +1164,7 @@ GLOBAL_LIST_INIT(uplink_items, subtypesof(/datum/uplink_item))
 
 // Stealth Items
 /datum/uplink_item/stealthy_tools
-	category = "Stealth and Camouflage Items"
+	category = "Stealth Gadgets"
 
 /datum/uplink_item/stealthy_tools/agent_card
 	name = "Agent Identification Card"
@@ -1266,7 +1266,7 @@ GLOBAL_LIST_INIT(uplink_items, subtypesof(/datum/uplink_item))
 
 //Space Suits and Hardsuits
 /datum/uplink_item/suits
-	category = "Space Suits and Hardsuits"
+	category = "Space Suits"
 	surplus = 40
 
 /datum/uplink_item/suits/space_suit
@@ -1308,7 +1308,7 @@ GLOBAL_LIST_INIT(uplink_items, subtypesof(/datum/uplink_item))
 
 // Devices and Tools
 /datum/uplink_item/device_tools
-	category = "Devices and Tools"
+	category = "Misc. Gadgets"
 
 /datum/uplink_item/device_tools/cutouts
 	name = "Adaptive Cardboard Cutouts"
@@ -1579,7 +1579,7 @@ GLOBAL_LIST_INIT(uplink_items, subtypesof(/datum/uplink_item))
 			This will permanently destroy your body, however."
 	item = /obj/item/storage/box/syndie_kit/imp_microbomb
 	cost = 2
-	include_modes = list(/datum/game_mode/nuclear)
+	// include_modes = list(/datum/game_mode/nuclear) hippie -- go away
 
 /datum/uplink_item/implants/macrobomb
 	name = "Macrobomb Implant"
@@ -1587,7 +1587,7 @@ GLOBAL_LIST_INIT(uplink_items, subtypesof(/datum/uplink_item))
 			Upon death, releases a massive explosion that will wipe out everything nearby."
 	item = /obj/item/storage/box/syndie_kit/imp_macrobomb
 	cost = 20
-	include_modes = list(/datum/game_mode/nuclear)
+	// include_modes = list(/datum/game_mode/nuclear) hippie -- go away
 	restricted = TRUE
 
 /datum/uplink_item/implants/radio
@@ -1916,3 +1916,4 @@ GLOBAL_LIST_INIT(uplink_items, subtypesof(/datum/uplink_item))
 	item = /obj/item/storage/fancy/cigarettes/cigpack_syndicate
 	cost = 2
 	illegal_tech = FALSE
+	

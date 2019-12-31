@@ -22,11 +22,13 @@
 	armour_penetration = 35
 	actions_types = list(/datum/action/item_action/cult_dagger)
 
+/* hippie start -- silicons can now see cult stuff
 /obj/item/melee/cultblade/dagger/Initialize()
 	. = ..()
 	var/image/I = image(icon = 'icons/effects/blood.dmi' , icon_state = null, loc = src)
 	I.override = TRUE
 	add_alt_appearance(/datum/atom_hud/alternate_appearance/basic/silicons, "cult_dagger", I)
+hippie end*/
 
 /obj/item/melee/cultblade
 	name = "eldritch longsword"
@@ -263,6 +265,7 @@
 	knockdown = 20
 
 /obj/item/restraints/legcuffs/bola/cult/pickup(mob/living/user)
+	. = ..()
 	if(!iscultist(user))
 		to_chat(user, "<span class='warning'>The bola seems to take on a life of its own!</span>")
 		throw_impact(user)

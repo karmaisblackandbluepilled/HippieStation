@@ -47,13 +47,13 @@
 
 /obj/effect/forcefield/pillarmen/wind
 	desc = "A whirling current of cold air blocking your path. It'd be unwise to cross it."
-	var/mob/owner
+	var/mob/living/owner
 
-/obj/effect/forcefield/wizard/Initialize(mapload, mob/summoner)
+/obj/effect/forcefield/pillarmen/wind/Initialize(mapload, mob/summoner)
 	. = ..()
 	owner = summoner
 
-/obj/effect/forcefield/wizard/CanPass(atom/movable/mover, turf/target)
+/obj/effect/forcefield/pillarmen/wind/CanPass(atom/movable/mover, turf/target)
 	if(mover == owner)
 		return TRUE
 	if(ismob(mover))

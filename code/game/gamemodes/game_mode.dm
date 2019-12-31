@@ -119,7 +119,7 @@
 		replacementmode.make_antag_chance(character)
 	return
 
-
+/* HANDLED IN HIPPIESTATION GAME_MODE.DM  - MODULE: SHUTTLE TOGGLE - Changes here too.
 ///Allows rounds to basically be "rerolled" should the initial premise fall through. Also known as mulligan antags.
 /datum/game_mode/proc/convert_roundtype()
 	set waitfor = FALSE
@@ -148,7 +148,7 @@
 	replacementmode = pickweight(usable_modes)
 
 	switch(SSshuttle.emergency.mode) //Rounds on the verge of ending don't get new antags, they just run out
-		if(SHUTTLE_STRANDED, SHUTTLE_ESCAPE)
+		if(SHUTTLE_STRANDED, SHUTTLE_ESCAPE, SHUTTLE_DISABLED) //MODULE: SHUTTLE TOGGLE
 			return 1
 		if(SHUTTLE_CALL)
 			if(SSshuttle.emergency.timeLeft(1) < initial(SSshuttle.emergencyCallTime)*0.5)
@@ -197,7 +197,7 @@
 	replacementmode.gamemode_ready = TRUE //Awful but we're not doing standard setup here.
 	round_converted = 2
 	message_admins("-- IMPORTANT: The roundtype has been converted to [replacementmode.name], antagonists may have been created! --")
-
+*/
 
 ///Called by the gameSSticker
 /datum/game_mode/process()
@@ -294,7 +294,7 @@
 			intercepttext += G.get_report()
 
 	print_command_report(intercepttext, "Central Command Status Summary", announce=FALSE)
-	priority_announce("A summary has been copied and printed to all communications consoles.", "Enemy communication intercepted. Security level elevated.", 'sound/ai/intercept.ogg')
+	priority_announce("A summary has been copied and printed to all communications consoles.", "Enemy communication intercepted. Security level elevated.", 'hippiestation/sound/pyko/intercept.ogg') // hippie -- pykoai
 	if(GLOB.security_level < SEC_LEVEL_BLUE)
 		set_security_level(SEC_LEVEL_BLUE)
 
@@ -363,7 +363,7 @@
 	// Ultimate randomizing code right here
 	for(var/mob/dead/new_player/player in GLOB.player_list)
 		if(player.client && player.ready == PLAYER_READY_TO_PLAY && player.check_preferences())
-			if(!is_banned_from(player.ckey, CATBAN) && !is_banned_from(player.ckey, CLUWNEBAN)) // hippie -- adds our jobban checks
+			if(!is_banned_from(player.ckey, CATBAN) && !is_banned_from(player.ckey, CLUWNEBAN) && !is_banned_from(player.ckey, CRABBAN)) // hippie -- adds our jobban checks
 				players += player
 
 	// Shuffling, the players list is now ping-independent!!!
@@ -596,3 +596,7 @@
 		SSticker.news_report = STATION_EVACUATED
 		if(SSshuttle.emergency.is_hijacked())
 			SSticker.news_report = SHUTTLE_HIJACK
+
+/// Mode specific admin panel.
+/datum/game_mode/proc/admin_panel()
+	return

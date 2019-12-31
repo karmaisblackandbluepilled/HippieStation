@@ -72,7 +72,7 @@ GLOBAL_LIST_EMPTY(silo_access_logs)
 
 /obj/machinery/ore_silo/proc/generate_ui()
 	var/datum/component/material_container/materials = GetComponent(/datum/component/material_container)
-	var/list/ui = list("<head><title>Ore Silo</title></head><body><div class='statusDisplay'><h2>Stored Material:</h2>")
+	var/list/ui = list("<head>[UTF8HEADER]<title>Ore Silo</title></head><body><div class='statusDisplay'><h2>Stored Material:</h2>")
 	var/any = FALSE
 	for(var/M in materials.materials)
 		var/datum/material/mat = materials.materials[M]
@@ -161,6 +161,7 @@ GLOBAL_LIST_EMPTY(silo_access_logs)
 		return TRUE
 
 /obj/machinery/ore_silo/multitool_act(mob/living/user, obj/item/multitool/I)
+	. = ..()
 	if (istype(I))
 		to_chat(user, "<span class='notice'>You log [src] in the multitool's buffer.</span>")
 		I.buffer = src

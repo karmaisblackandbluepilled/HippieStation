@@ -981,12 +981,13 @@
 	if(!internal_damage)
 		SEND_SOUND(occupant, sound('sound/mecha/nominal.ogg',volume=50))
 	GrantActions(brainmob)
+	log_game("[key_name(user)] has put the MMI/posibrain of [key_name(brainmob)] into [src] at [AREACOORD(src)]")
 	return TRUE
 
 /obj/mecha/container_resist(mob/living/user)
 	is_currently_ejecting = TRUE
 	to_chat(occupant, "<span class='notice'>You begin the ejection procedure. Equipment is disabled during this process. Hold still to finish ejecting.<span>")
-	if(do_after(occupant,exit_delay, target = src))
+	if(do_after(occupant, has_gravity() ? exit_delay : 0 , target = src))
 		to_chat(occupant, "<span class='notice'>You exit the mech.<span>")
 		go_out()
 	else

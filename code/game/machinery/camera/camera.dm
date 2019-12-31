@@ -189,24 +189,27 @@
 	return TRUE
 
 /obj/machinery/camera/wirecutter_act(mob/living/user, obj/item/I)
+	. = ..()
 	if(!panel_open)
-		return FALSE
+		return
 	toggle_cam(user, 1)
 	obj_integrity = max_integrity //this is a pretty simplistic way to heal the camera, but there's no reason for this to be complex.
 	I.play_tool_sound(src)
 	return TRUE
 
 /obj/machinery/camera/multitool_act(mob/living/user, obj/item/I)
+	. = ..()
 	if(!panel_open)
-		return FALSE
+		return
 
 	setViewRange((view_range == initial(view_range)) ? short_range : initial(view_range))
 	to_chat(user, "<span class='notice'>You [(view_range == initial(view_range)) ? "restore" : "mess up"] the camera's focus.</span>")
 	return TRUE
 
 /obj/machinery/camera/welder_act(mob/living/user, obj/item/I)
+	. = ..()
 	if(!panel_open)
-		return FALSE
+		return
 
 	if(!I.tool_start_check(user, amount=0))
 		return TRUE
@@ -280,10 +283,10 @@
 					to_chat(AI, "<b>[U]</b> holds <a href='?_src_=usr;show_paper=1;'>\a [itemname]</a> up to one of your cameras ...")
 				else
 					to_chat(AI, "<b><a href='?src=[REF(AI)];track=[html_encode(U.name)]'>[U]</a></b> holds <a href='?_src_=usr;show_paper=1;'>\a [itemname]</a> up to one of your cameras ...")
-				AI.last_paper_seen = "<HTML><HEAD><TITLE>[itemname]</TITLE></HEAD><BODY><TT>[info]</TT></BODY></HTML>"
+				AI.last_paper_seen = "<HTML><HEAD>[UTF8HEADER]<TITLE>[itemname]</TITLE></HEAD><BODY><TT>[info]</TT></BODY></HTML>"
 			else if (O.client && O.client.eye == src)
 				to_chat(O, "[U] holds \a [itemname] up to one of the cameras ...")
-				O << browse(text("<HTML><HEAD><TITLE>[]</TITLE></HEAD><BODY><TT>[]</TT></BODY></HTML>", itemname, info), text("window=[]", itemname))
+				O << browse(text("<HTML><HEAD>[UTF8HEADER]<TITLE>[]</TITLE></HEAD><BODY><TT>[]</TT></BODY></HTML>", itemname, info), text("window=[]", itemname))
 		return
 
 	else if(istype(I, /obj/item/camera_bug))
@@ -362,7 +365,8 @@
 	if(status)
 		change_msg = "reactivates"
 		triggerCameraAlarm()
-		addtimer(CALLBACK(src, .proc/cancelCameraAlarm), 100)
+		if(!QDELETED(src)) //We'll be doing it anyway in destroy
+			addtimer(CALLBACK(src, .proc/cancelCameraAlarm), 100)
 	if(displaymessage)
 		if(user)
 			visible_message("<span class='danger'>[user] [change_msg] [src]!</span>")
@@ -423,14 +427,12 @@
 	for(var/obj/machinery/camera/C in oview(4, M))
 		if(C.can_use())	// check if camera disabled
 			return C
-			break
 	return null
 
 /proc/near_range_camera(var/mob/M)
 	for(var/obj/machinery/camera/C in range(4, M))
 		if(C.can_use())	// check if camera disabled
 			return C
-			break
 
 	return null
 

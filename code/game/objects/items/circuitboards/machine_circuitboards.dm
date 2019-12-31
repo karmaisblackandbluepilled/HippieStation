@@ -58,6 +58,24 @@
 	build_path = /obj/machinery/holopad
 	req_components = list(/obj/item/stock_parts/capacitor = 1)
 	needs_anchored = FALSE //wew lad
+	var/secure = FALSE
+
+/obj/item/circuitboard/machine/holopad/attackby(obj/item/P, mob/user, params)
+	if(P.tool_behaviour == TOOL_MULTITOOL)
+		if(secure)
+			build_path = /obj/machinery/holopad
+			secure = FALSE
+		else
+			build_path = /obj/machinery/holopad/secure
+			secure = TRUE
+		to_chat(user, "<span class='notice'>You [secure? "en" : "dis"]able the security on the [src]</span>")
+	. = ..()
+
+/obj/item/circuitboard/machine/holopad/examine(mob/user)
+	. = ..()
+	. += "There is a connection port on this board that could be <b>pulsed</b>"
+	if(secure)
+		. += "There is a red light flashing next to the word \"secure\""
 
 /obj/item/circuitboard/machine/launchpad
 	name = "Bluespace Launchpad (Machine Board)"
@@ -776,6 +794,7 @@
 		/obj/item/stock_parts/manipulator = 1)
 
 /obj/item/circuitboard/machine/public_nanite_chamber/multitool_act(mob/living/user)
+	. = ..()
 	var/new_cloud = input("Set the public nanite chamber's Cloud ID (1-100).", "Cloud ID", cloud_id) as num|null
 	if(new_cloud == null)
 		return
@@ -976,6 +995,17 @@
 	name = "Thermo-Electric Generator (Machine Board)"
 	build_path = /obj/machinery/power/generator
 	req_components = list()
+
+/obj/item/circuitboard/machine/pump
+	name = "Portable Liquid Pump (Machine Board)"
+	icon_state = "supply"
+	build_path = /obj/machinery/power/liquid_pump
+	needs_anchored = FALSE
+	req_components = list(
+		/obj/item/stock_parts/manipulator = 2,
+		/obj/item/stock_parts/matter_bin = 2)
+
+//Misc
 
 /obj/item/circuitboard/machine/circulator
 	name = "Circulator/Heat Exchanger (Machine Board)"

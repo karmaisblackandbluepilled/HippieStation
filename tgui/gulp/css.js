@@ -12,13 +12,13 @@ export function css () {
       paths: [ f.src ]
     }))
     .pipe(g.postcss([
-      s.autoprefixer({ browsers: ['last 2 versions', 'ie >= 8'] }),
+      s.autoprefixer({ browserslistOverride: ['last 2 versions', 'ie >= 8'] }),
       s.gradient,
       s.opacity,
       s.rgba({oldie: true}),
       s.plsfilters({oldIE: true}),
       s.fontweights,
-      f.min ? s.cssnano() : false,
+      ... f.min ? [s.cssnano()] : [],
     ]))
     .pipe(g.bytediff.start())
     .pipe(g.if(f.debug, g.sourcemaps.write()))

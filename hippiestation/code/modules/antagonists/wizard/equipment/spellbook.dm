@@ -1,5 +1,5 @@
 /obj/item/spellbook
-	var/gauntlet_flag = FALSE
+	var/list/bought_things = list()
 
 /obj/item/spellbook/attackby(obj/item/O, mob/user, params)
 	if(istype(O, /obj/item/badmin_gauntlet))
@@ -12,6 +12,7 @@
 		for(var/datum/spellbook_entry/item/badmin_gauntlet/I in entries)
 			if(!isnull(I.limit))
 				I.limit++
+		bought_things[/datum/spellbook_entry/item/badmin_gauntlet] = 0
 		qdel(O)
 		return
 	return ..()
@@ -136,31 +137,54 @@
 	cost = 10
 
 /datum/spellbook_entry/item/badmin_gauntlet/IsAvailible()
-	if(!..())
-		return FALSE
-	return (SSticker.mode.name != "ragin' mages") && !GLOB.gauntlet_equipped
+	return ..() && SSticker.mode.name != "ragin' mages" && SSticker.mode.name != "dynamic mode"
 
 /datum/spellbook_entry/item/badmin_gauntlet/Buy(mob/living/carbon/human/user, obj/item/spellbook/book)
 	. = ..()
-	book.uses = 0
+	book.uses = cost
 
 /datum/spellbook_entry/item/badmin_gauntlet/CanBuy(mob/living/carbon/human/user, obj/item/spellbook/book)
-	return ..() && !book.gauntlet_flag && (GLOB.Debug2 || GLOB.joined_player_list.len >= 27)
+	for(var/SP in book.bought_things)
+		if(book.bought_things[SP] > 0)
+			return FALSE
+	return ..() && (GLOB.Debug2 || GLOB.joined_player_list.len >= 27)
+
+/datum/spellbook_entry/the_world
+	name = "THE WORLD"
+	desc = "Freeze time across the entire station. 1 second per spellpoint. Comes with the ability to throw a large amount of knives. <b><i>Cannot be refunded.</i></b>"
+	category = "Offensive"
+	cost = 1
+	spell_type = /obj/effect/proc_holder/spell/self/the_world
+
+/datum/spellbook_entry/the_world/Buy(mob/living/carbon/human/user, obj/item/spellbook/book)
+	if(!S || QDELETED(S))
+		S = new spell_type()
+	for(var/obj/effect/proc_holder/spell/self/the_world/aspell in user.mind.spell_list)
+		aspell.seconds += 10
+		aspell.name = "THE WORLD ([aspell.seconds / 10] seconds)"
+		SSblackbox.record_feedback("nested tally", "wizard_spell_improved", 1, list("THE WORLD", "[aspell.seconds]"))
+		return TRUE
+	SSblackbox.record_feedback("tally", "wizard_spell_learned", 1, "THE WORLD")
+	user.mind.AddSpell(new /obj/effect/proc_holder/spell/aimed/checkmate)
+	S.name = "THE WORLD (1 second)"
+	user.mind.AddSpell(S)
+	to_chat(user, "<span class='notice'>You have learned [S.name].</span>")
+	return TRUE
+
+/datum/spellbook_entry/the_world/CanRefund(mob/living/carbon/human/user, obj/item/spellbook/book)
+	return FALSE
+
+/datum/spellbook_entry/summon/IsAvailible()
+	return ..() && SSticker.mode.name != "ragin' mages" && SSticker.mode.name != "dynamic mode"
 
 /datum/spellbook_entry/summon/guns/IsAvailible()
-	if (!..())
-		return FALSE
-	return (SSticker.mode.name != "ragin' mages" && !CONFIG_GET(flag/no_summon_guns))
+	return ..() && !CONFIG_GET(flag/no_summon_guns)
 
 /datum/spellbook_entry/summon/magic/IsAvailible()
-	if (!..())
-		return FALSE
-	return (SSticker.mode.name != "ragin' mages" && !CONFIG_GET(flag/no_summon_magic))
+	return ..() && !CONFIG_GET(flag/no_summon_magic)
 
 /datum/spellbook_entry/summon/events/IsAvailible()
-	if (!..())
-		return FALSE
-	return (SSticker.mode.name != "ragin' mages" && !CONFIG_GET(flag/no_summon_events))
+	return ..() && !CONFIG_GET(flag/no_summon_events)
 
 /obj/item/spellbook
 	persistence_replacement = /obj/item/book/granter/spell/random

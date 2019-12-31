@@ -1,7 +1,7 @@
 //Update this whenever the db schema changes
 //make sure you add an update to the schema_version stable in the db changelog
 #define DB_MAJOR_VERSION 5
-#define DB_MINOR_VERSION 1
+#define DB_MINOR_VERSION 2
 
 
 //Timing subsystem
@@ -69,6 +69,7 @@
 #define INIT_ORDER_TIMER			1
 #define INIT_ORDER_DEFAULT			0
 #define INIT_ORDER_AIR				-1
+#define INIT_ORDER_AIR_TURFS 		-2
 #define INIT_ORDER_ASSETS			-4
 #define INIT_ORDER_ICON_SMOOTHING	-5
 #define INIT_ORDER_OVERLAY			-6
@@ -78,7 +79,9 @@
 #define INIT_ORDER_SHUTTLE			-21
 #define INIT_ORDER_MINOR_MAPPING	-40
 #define INIT_ORDER_PATH				-50
-#define INIT_ORDER_PERSISTENCE		-100
+#define INIT_ORDER_DISCORD			-60
+#define INIT_ORDER_PERSISTENCE		-95
+#define INIT_ORDER_CHAT				-100 //Should be last to ensure chat remains smooth during init.
 
 // Subsystem fire priority, from lowest to highest priority
 // If the subsystem isn't listed here it's either DEFAULT or PROCESS (if it's a processing subsystem child)
@@ -101,12 +104,14 @@
 #define FIRE_PRIORITY_OBJ			40
 #define FIRE_PRIORITY_ACID			40
 #define FIRE_PRIOTITY_BURNING		40
+#define FIRE_PRIORITY_AIR_TURFS	40
 #define FIRE_PRIORITY_DEFAULT		50
 #define FIRE_PRIORITY_PARALLAX		65
 #define FIRE_PRIORITY_MOBS			100
 #define FIRE_PRIORITY_TGUI			110
 #define FIRE_PRIORITY_TICKER		200
 #define FIRE_PRIORITY_ATMOS_ADJACENCY	300
+#define FIRE_PRIORITY_CHAT			400
 #define FIRE_PRIORITY_OVERLAYS		500
 #define FIRE_PRIORITY_INPUT			1000 // This must always always be the max highest priority. Player input must never be lost.
 
@@ -146,4 +151,6 @@
 			}\
 		}\
 		A.flags_1 &= ~OVERLAY_QUEUED_1;\
+		if(isturf(A)){SSdemo.mark_turf(A);}\
+		if(isobj(A) || ismob(A)){SSdemo.mark_dirty(A);}\
 	}

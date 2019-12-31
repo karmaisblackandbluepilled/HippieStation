@@ -1478,7 +1478,7 @@
 /turf/open/floor/carpet,
 /area/awaymission/academy/academyaft)
 "fH" = (
-/obj/machinery/shieldwallgen,
+/obj/machinery/power/shieldwallgen,
 /obj/effect/turf_decal/stripes/line{
 	dir = 8
 	},
@@ -2926,7 +2926,7 @@
 /area/awaymission/academy/academycellar)
 "lg" = (
 /obj/structure/table/wood,
-/obj/item/guardiancreator/choose,
+/obj/item/guardiancreator,
 /turf/open/floor/engine/cult,
 /area/awaymission/academy/academycellar)
 "lh" = (

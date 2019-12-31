@@ -12,6 +12,9 @@
 	idle_power_usage = 5
 	active_power_usage = 100
 	circuit = /obj/item/circuitboard/machine/smartfridge
+	ui_x = 440
+	ui_y = 550
+
 	var/max_n_of_items = 1500
 	var/allow_ai_retrieve = FALSE
 	var/list/initial_contents
@@ -36,11 +39,7 @@
 /obj/machinery/smartfridge/examine(mob/user)
 	. = ..()
 	if(in_range(user, src) || isobserver(user))
-		. += "<span class='notice'>The status display reads: This unit can hold a maximum of <b>[max_n_of_items]</b> items.<span>"
-
-/obj/machinery/smartfridge/power_change()
-	..()
-	update_icon()
+		. += "<span class='notice'>The status display reads: This unit can hold a maximum of <b>[max_n_of_items]</b> items.</span>"
 
 /obj/machinery/smartfridge/update_icon()
 	if(!stat)
@@ -157,7 +156,7 @@
 /obj/machinery/smartfridge/ui_interact(mob/user, ui_key = "main", datum/tgui/ui = null, force_open = FALSE, datum/tgui/master_ui = null, datum/ui_state/state = GLOB.default_state)
 	ui = SStgui.try_update_ui(user, src, ui_key, ui, force_open)
 	if(!ui)
-		ui = new(user, src, ui_key, "smartvend", name, 440, 550, master_ui, state)
+		ui = new(user, src, ui_key, "smartvend", name, ui_x, ui_y, master_ui, state)
 		ui.set_autoupdate(FALSE)
 		ui.open()
 
@@ -277,13 +276,15 @@
 			return TRUE
 	return FALSE
 
+/obj/machinery/smartfridge/drying_rack/powered()
+	if(!anchored)
+		return FALSE
+	return ..()
+
 /obj/machinery/smartfridge/drying_rack/power_change()
-	if(powered() && anchored)
-		stat &= ~NOPOWER
-	else
-		stat |= NOPOWER
+	. = ..()
+	if(!powered())
 		toggle_drying(TRUE)
-	update_icon()
 
 /obj/machinery/smartfridge/drying_rack/load() //For updating the filled overlay
 	..()

@@ -72,11 +72,13 @@
 		air.copy_from(copy)
 
 /turf/return_air()
+	RETURN_TYPE(/datum/gas_mixture)
 	var/datum/gas_mixture/GM = new
 	GM.copy_from_turf(src)
 	return GM
 
 /turf/open/return_air()
+	RETURN_TYPE(/datum/gas_mixture)
 	return air
 
 /turf/open/return_analyzable_air()
@@ -232,15 +234,22 @@
 			our_air.share(G, adjacent_turfs_length)
 			LAST_SHARE_CHECK
 
-	our_air.react(src)
-
-	update_visuals()
+	SSair.add_to_react_queue(src)
 
 	if((!our_excited_group && !(our_air.temperature > MINIMUM_TEMPERATURE_START_SUPERCONDUCTION && consider_superconductivity(starting = TRUE))) \
 	|| (cached_atmos_cooldown > (EXCITED_GROUP_DISMANTLE_CYCLES * 2)))
 		SSair.remove_from_active(src)
 
 	atmos_cooldown = cached_atmos_cooldown
+
+/turf/proc/process_cell_reaction()
+	SSair.remove_from_react_queue(src)
+
+/turf/open/process_cell_reaction()
+	air.react(src)
+	update_visuals()
+	SSair.remove_from_react_queue(src)
+	return
 
 //////////////////////////SPACEWIND/////////////////////////////
 

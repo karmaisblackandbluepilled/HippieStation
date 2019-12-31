@@ -140,7 +140,7 @@
 /obj/item/toy/crayon/ui_interact(mob/user, ui_key = "main", datum/tgui/ui = null, force_open = FALSE, datum/tgui/master_ui = null, datum/ui_state/state = GLOB.hands_state)
 	// tgui is a plague upon this codebase
 
-	SStgui.try_update_ui(user, src, ui_key, ui, force_open)
+	ui = SStgui.try_update_ui(user, src, ui_key, ui, force_open)
 	if(!ui)
 		ui = new(user, src, ui_key, "crayon", name, 600, 600,
 			master_ui, state)
@@ -399,12 +399,14 @@
 		return
 	. = charges_used
 	// hippie end
+	/* hippie start -- making chem puddle not appear where you draw
 	var/fraction = min(1, . / reagents.maximum_volume)
 	if(affected_turfs.len)
 		fraction /= affected_turfs.len
 	for(var/t in affected_turfs)
 		reagents.reaction(t, TOUCH, fraction * volume_multiplier)
 		reagents.trans_to(t, ., volume_multiplier, transfered_by = user)
+	hippie end */
 	check_empty(user)
 
 /obj/item/toy/crayon/attack(mob/M, mob/user)
